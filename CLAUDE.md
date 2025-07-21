@@ -6,7 +6,7 @@ Laravel を使用したモダンなブログサイトの構築。認証、投稿
 
 ## 技術スタック
 
--   **フレームワーク**: Laravel 11.x with Sail
+-   **フレームワーク**: Laravel 12.x with Sail
 -   **データベース**: MySQL 8.0 (Docker)
 -   **フロントエンド**: Livewire 3.x + Alpine.js + Tailwind CSS
 -   **テスト**: Pest（並列実行対応）

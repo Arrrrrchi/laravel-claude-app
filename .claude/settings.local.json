@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(php artisan make:migration:*)",
-      "mcp__filesystem-laravelclaudeapp__edit_file"
+      "mcp__filesystem-laravelclaudeapp__edit_file",
+      "mcp__filesystem-laravelclaudeapp__write_file",
+      "Bash(./vendor/bin/sail mysql:*)",
+      "Bash(./vendor/bin/sail artisan db:show)",
+      "Bash(./vendor/bin/sail artisan db:table posts)",
+      "Bash(./vendor/bin/sail artisan tinker:*)",
+      "Bash(./vendor/bin/sail artisan migrate:fresh)"
     ],
     "deny": []
   }
