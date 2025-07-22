@@ -8,7 +8,12 @@
       "Bash(./vendor/bin/sail artisan db:show)",
       "Bash(./vendor/bin/sail artisan db:table posts)",
       "Bash(./vendor/bin/sail artisan tinker:*)",
-      "Bash(./vendor/bin/sail artisan migrate:fresh)"
+      "Bash(./vendor/bin/sail artisan migrate:fresh)",
+      "mcp__filesystem-laravelclaudeapp__read_file",
+      "Bash(./vendor/bin/sail artisan vendor:publish:*)",
+      "Bash(php artisan make:controller:*)",
+      "Bash(php artisan make:request:*)",
+      "mcp__filesystem-laravelclaudeapp__create_directory"
     ],
     "deny": []
   }
