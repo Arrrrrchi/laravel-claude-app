@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', 'パスワードリセット')
 
 @section('content')
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -8,51 +8,50 @@
             <div>
                 <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-600">
                     <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                     </svg>
                 </div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    アカウントにログイン
+                    パスワードをリセット
                 </h2>
                 <p class="mt-2 text-center text-sm text-gray-600">
-                    または
-                    <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                        新規アカウントを作成
-                    </a>
+                    新しいパスワードを入力してください
                 </p>
             </div>
 
-            <form class="mt-8 space-y-6" action="{{ route('login') }}" method="POST">
+            <form class="mt-8 space-y-6" action="{{ route('password.update') }}" method="POST">
                 @csrf
-                
-                <div class="rounded-md shadow-sm -space-y-px">
+
+                <input type="hidden" name="token" value="{{ $token }}">
+
+                <div class="space-y-4">
                     <div>
                         <label for="email" class="sr-only">メールアドレス</label>
-                        <input 
-                            id="email" 
-                            name="email" 
-                            type="email" 
-                            autocomplete="email" 
-                            required 
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border @error('email') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                            class="appearance-none rounded-md relative block w-full px-3 py-2 border @error('email') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                             placeholder="メールアドレス"
-                            value="{{ old('email') }}"
+                            value="{{ old('email', $email ?? '') }}"
                         >
                         @error('email')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                    
+
                     <div class="relative">
-                        <label for="password" class="sr-only">パスワード</label>
+                        <label for="password" class="sr-only">新しいパスワード</label>
                         <input
                             id="password"
                             name="password"
                             type="password"
-                            autocomplete="current-password"
+                            autocomplete="new-password"
                             required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 pr-10 border @error('password') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                            placeholder="パスワード"
+                            class="appearance-none rounded-md relative block w-full px-3 py-2 pr-10 border @error('password') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="新しいパスワード（8文字以上）"
                         >
                         <button
                             type="button"
@@ -68,36 +67,40 @@
                             </svg>
                         </button>
                         @error('password')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input 
-                            id="remember-me" 
-                            name="remember" 
-                            type="checkbox" 
-                            value="1"
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            {{ old('remember') ? 'checked' : '' }}
+                    <div class="relative">
+                        <label for="password_confirmation" class="sr-only">パスワード確認</label>
+                        <input
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            type="password"
+                            autocomplete="new-password"
+                            required
+                            class="appearance-none rounded-md relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="パスワード確認"
                         >
-                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-                            次回から自動ログイン
-                        </label>
-                    </div>
-
-                    <div class="text-sm">
-                        <a href="{{ route('password.request') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                            パスワードをお忘れですか？
-                        </a>
+                        <button
+                            type="button"
+                            onclick="togglePassword('password_confirmation')"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                        >
+                            <svg id="password_confirmation-eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg id="password_confirmation-eye-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
                 <div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out"
                     >
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
@@ -105,26 +108,9 @@
                                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                             </svg>
                         </span>
-                        ログイン
+                        パスワードをリセット
                     </button>
                 </div>
-
-                <!-- Rate Limiting Message -->
-                @if (session('status'))
-                    <div class="rounded-md bg-yellow-50 p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-yellow-700">{{ session('status') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
             </form>
         </div>
     </div>

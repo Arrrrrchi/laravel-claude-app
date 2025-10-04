@@ -7,11 +7,14 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Models\User;
+use App\Notifications\Auth\PasswordResetNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -131,12 +134,57 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => ['required', 'email', 'exists:users,email'],
+        ], [
+            'email.required' => 'メールアドレスを入力してください。',
+            'email.email' => '有効なメールアドレスを入力してください。',
+            'email.exists' => '指定されたメールアドレスは登録されていません。',
         ]);
 
-        // Here you would implement password reset logic
-        // For now, we'll just return a success message
-        
+        // Generate password reset token
+        $token = Password::createToken(
+            User::where('email', $request->email)->first()
+        );
+
+        // Send password reset notification
+        $user = User::where('email', $request->email)->first();
+        $user->notify(new PasswordResetNotification($token, $request->email));
+
         return back()
-            ->with('status', 'パスワードリセットリンクをメールで送信しました！');
+            ->with('status', 'パスワードリセットリンクをメールで送信しました！メールをご確認ください。');
+    }
+
+    /**
+     * Show password reset form
+     */
+    public function showResetForm(Request $request, string $token): View
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email,
+        ]);
+    }
+
+    /**
+     * Handle password reset
+     */
+    public function resetPassword(ResetPasswordRequest $request): RedirectResponse
+    {
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')
+                ->with('success', 'パスワードが正常にリセットされました。新しいパスワードでログインしてください。');
+        }
+
+        throw ValidationException::withMessages([
+            'email' => __($status),
+        ]);
     }
 }

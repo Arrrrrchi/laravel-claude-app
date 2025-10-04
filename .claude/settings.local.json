@@ -13,7 +13,15 @@
       "Bash(./vendor/bin/sail artisan vendor:publish:*)",
       "Bash(php artisan make:controller:*)",
       "Bash(php artisan make:request:*)",
-      "mcp__filesystem-laravelclaudeapp__create_directory"
+      "mcp__filesystem-laravelclaudeapp__create_directory",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(php artisan make:notification:*)",
+      "Bash(curl:*)",
+      "Bash(./vendor/bin/sail artisan route:list)",
+      "Bash(./vendor/bin/sail artisan:*)",
+      "Bash(./vendor/bin/sail down:*)",
+      "Bash(./vendor/bin/sail up:*)"
     ],
     "deny": []
   }
